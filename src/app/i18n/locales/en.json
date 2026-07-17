@@ -1,0 +1,114 @@
+{
+  "nav": {
+    "home": "Home",
+    "ourStory": "Our Story",
+    "ourBusinesses": "What we do",
+    "team": "Team",
+    "news": "News",
+    "contact": "Contact"
+  },
+  "footer": {
+    "explore": "Pages",
+    "ourBusinesses": "What we do",
+    "contact": "Contact",
+    "tagline": "The Art of Living",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy",
+    "allRightsReserved": "All Rights Reserved."
+  },
+  "common": {
+    "english": "English",
+    "georgian": "ქართული",
+    "darkMode": "Toggle Dark Mode"
+  },
+  "cookieConsent": {
+    "eyebrow": "Cookies",
+    "title": "We use cookies for a better experience",
+    "description": "We use analytics cookies to understand how visitors use the site and to improve performance. Google Analytics will only be enabled if you accept.",
+    "learnMore": "View Cookie Policy",
+    "reject": "Reject",
+    "accept": "Accept"
+  },
+  "newsSection": {
+    "title": "News",
+    "allNews": "All News"
+  },
+  "newsPage": {
+    "categories": {
+      "all": "All",
+      "pressReleases": "Press Releases",
+      "corporate": "Corporate",
+      "inTheNews": "In the News"
+    },
+    "news": "News",
+    "searchPlaceholder": "Search news...",
+    "loading": "Loading news...",
+    "noNews": "No news items found.",
+    "loadMore": "Load More News",
+    "readMore": "Read More",
+    "readFullStory": "Read Full Story",
+    "mediaCentre": "Media Centre",
+    "home": "Home",
+    "prev": "Prev",
+    "next": "Next"
+  },
+  "contactPage": {
+    "sendEnquiry": "Send an Enquiry",
+    "contactInfo": "Contact info",
+    "ourLocation": "Our Location",
+    "address": "72 Melikishvili St, Batumi, Georgia",
+    "description": "Whether you are looking for your dream home, seeking an investment opportunity, or have a corporate inquiry, our dedicated team is here to assist you.",
+    "firstName": "First Name *",
+    "lastName": "Last Name *",
+    "email": "Email Address *",
+    "phone": "Phone Number *",
+    "inquiryType": "Select Inquiry Type *",
+    "message": "Your Message",
+    "submit": "Submit Enquiry",
+    "successMessage": "Message sent successfully!",
+    "errorMessage": "An error occurred. Please try again later.",
+    "inquiryOptions": {
+      "sales": "Sales & Investment",
+      "customerService": "Customer Service",
+      "careers": "Careers",
+      "media": "Media & PR",
+      "other": "Other"
+    }
+  },
+  "manuPages": {
+    "home": "Home",
+    "contact": "Contact",
+    "ourStory": "Our Story",
+    "ourBusinesses": "What we do",
+    "team": "Team",
+    "news": "News"
+  },
+  "homePage": {
+    "ourBusinesses": "What we do",
+    "viewAll": "View All",
+    "more": "More",
+    "discoverOurStory": "Discover Our Story",
+    "fromGeorgiaToTheWorld": "From Georgia to the World"
+  },
+  "leadership": {
+    "title": "Team",
+    "description": "Our Team"
+  },
+  "seo": {
+    "home": "Home",
+    "ourStory": "Our Story",
+    "development": "Development",
+    "architecture": "Architecture",
+    "hospitality": "Hospitality",
+    "team": "Our Team",
+    "news": "News",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy"
+  },
+  "logoMaskSection": {
+    "text": "Origami Holding is a premier investment group, shaping global industries through innovation, quality, and a commitment to architectural and corporate excellence."
+  }
+}
