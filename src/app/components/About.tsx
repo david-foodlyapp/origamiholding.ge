@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useTranslation } from "react-i18next";
 import { CONFIG } from "../config";
 import { Loader2 } from "lucide-react";
@@ -14,14 +13,6 @@ interface AboutData {
   image: string | null;
 }
 
-const CUSTOM_KA_ABOUT_HTML = `
-  <p>“Origami”-ს ისტორია 2008 წელს, ბათუმში, BWC-ის სახელით დაიწყო. 18-წლიანი უწყვეტი მუშაობისა და ზრდის შედეგად, დღეს უკვე რეგიონის ერთ-ერთ ყველაზე მასშტაბურ, მრავალპროფილურ ჰოლდინგად ჩამოვყალიბდით. კომპანია სამ ძირითად მიმართულებას — დეველოპმენტს, არქიტექტურასა და სტუმარ-მასპინძლობას აერთიანებს, თუმცა ჩვენი მთავარი და სტრატეგიული ხაზი უძრავი ქონების განვითარებაა. ვფიქრობთ, რომ კომპანიაზე ძირითადად ფაქტები საუბრობენ — ჩვენ შევასრულეთ ყველა დაპირება! შევქმენით ბათუმის ერთ-ერთი ყველაზე მასშტაბური პროექტი White Sails, ამჟამად ვაშენებთ პრემიუმ კლასის საცხოვრებელ კომპლექსს Well Home-ს და ვიწყებთ კომპანიის ისტორიაში ყველაზე თამამი იდეის — Origami Island-ის განხორციელებას.</p>
-`;
-
-const CUSTOM_EN_ABOUT_HTML = `
-  <p>The history of “Origami” began in 2008 in Batumi under the name BWC. Over 18 years of continuous growth and development, we have evolved into one of the region’s largest and most diversified holdings. The company brings together three core directions — development, architecture, and hospitality — while our primary and strategic focus remains real estate development.</p>
-`;
-
 export function About() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language || "en";
@@ -33,7 +24,7 @@ export function About() {
     const fetchAbout = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/api/about-us?type=Origami&locale=${lang}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/api/about-us?locale=${lang}`, {
           headers: {
             "Accept": "application/json"
           }
@@ -52,22 +43,16 @@ export function About() {
     fetchAbout();
   }, [lang]);
 
-  const customBody =
-    lang === "ka"
-      ? CUSTOM_KA_ABOUT_HTML
-      : lang === "en"
-        ? CUSTOM_EN_ABOUT_HTML
-        : null;
   const aboutTextClassName =
     lang === "ka"
       ? "prose prose-lg dark:prose-invert text-gray-600 font-light leading-relaxed max-w-none [&>p]:mb-4 [&>h3]:text-xl [&>h3]:font-semibold [&>h3]:mb-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul>li]:mb-2 [&>strong]:font-semibold text-center"
       : "prose dark:prose-invert text-[0.95rem] text-gray-600 font-light leading-[1.95] max-w-[58rem] mx-auto [&>p]:mb-4 [&>h3]:text-xl [&>h3]:font-semibold [&>h3]:mb-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul>li]:mb-2 [&>strong]:font-semibold text-center";
 
   // Split the body into sections (assumes <h3> as section markers)
-  const bodySections = customBody ? [customBody] : aboutData?.body ? aboutData.body.split(/(?=<h3>)/) : [];
-  const initialBody = customBody ?? bodySections.slice(0, 2).join('');
+  const bodySections = aboutData?.body ? aboutData.body.split(/(?=<h3>)/) : [];
+  const initialBody = bodySections.slice(0, 2).join('');
   const remainingBody = bodySections.slice(2).join('');
-  const hasMore = !customBody && bodySections.length > 2;
+  const hasMore = bodySections.length > 2;
 
   return (
     <section id="about" className="py-24 bg-white dark:bg-[#050505] text-gray-900 dark:text-white overflow-hidden transition-colors duration-500">
@@ -82,7 +67,7 @@ export function About() {
                <Loader2 className="w-6 h-6 animate-spin mr-2" />
                <span className="text-sm uppercase tracking-widest">{t('newsPage.loading') || 'Loading...'}</span>
             </div>
-          ) : (customBody || aboutData?.body) ? (
+          ) : aboutData?.body ? (
             <div className="w-full flex flex-col items-center">
               <div 
                 className={aboutTextClassName}
