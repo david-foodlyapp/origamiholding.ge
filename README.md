@@ -15,7 +15,7 @@
   VITE_API_BASE_URL=https://api.origamiholding.com
   ```
 
-  The app reads the API base URL from `src/app/config.ts`. Runtime values from `public/config.js` have priority, then `VITE_API_BASE_URL` from `.env`, then the built-in fallback URL.
+  The app reads the API base URL from `VITE_API_BASE_URL` via `src/app/config.ts`. If the variable is not defined, it falls back to `https://api.origamiholding.com`.
 
   Run `npm run dev` to start the development server.
   
