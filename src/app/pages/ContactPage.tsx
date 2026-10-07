@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, ArrowRight, Loader2, CheckCircle2, AlertCircle } f
 import { useTranslation } from "react-i18next";
 import { SEO } from "../components/SEO";
 import { CONFIG } from "../config";
+import { getUtmParams } from "../lib/utm";
 
 interface ContactData {
   email: string | null;
@@ -14,9 +15,18 @@ interface ContactData {
   map_iframe: string | null;
 }
 
+interface ContactFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  inquiryType: string;
+  message: string;
+}
+
 export function ContactPage() {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -46,7 +56,7 @@ export function ContactPage() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
+    setFormData((prev: ContactFormData) => ({
       ...prev,
       [e.target.id]: e.target.value
     }));
@@ -59,6 +69,7 @@ export function ContactPage() {
     setStatus('loading');
 
     try {
+      const utmParams = getUtmParams();
       const response = await fetch(`${CONFIG.API_BASE_URL}/api/contact-messages`, {
         method: 'POST',
         headers: {
@@ -71,7 +82,8 @@ export function ContactPage() {
           phone: formData.phone,
           subject: formData.inquiryType,
           message: formData.message,
-          source_page: window.location.pathname
+          source_page: window.location.href,
+          ...utmParams
         }),
       });
 
