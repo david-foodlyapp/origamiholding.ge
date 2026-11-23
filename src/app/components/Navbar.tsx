@@ -5,6 +5,24 @@ import { useTheme } from "../contexts/ThemeContext";
 import { motion, AnimatePresence, Variants } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { useBranding } from "../contexts/BrandingContext";
+import { CONFIG } from "../config";
+
+interface MenuItem {
+  id: number;
+  title: string;
+  link: string;
+  rank: number;
+  status: boolean;
+}
+
+function isMenuItem(item: unknown): item is MenuItem {
+  if (!item || typeof item !== 'object') return false;
+  const value = item as MenuItem;
+  return typeof value.id === 'number' && typeof value.title === 'string'
+    && value.title.trim().length > 0 && typeof value.link === 'string'
+    && /^(\/(?!\/)|https?:\/\/)/i.test(value.link)
+    && typeof value.rank === 'number' && value.status === true;
+}
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,7 +31,36 @@ export function Navbar() {
   const isHomePage = location.pathname === "/";
   const { theme, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const lang = i18n.language?.startsWith('ka') ? 'ka' : 'en';
   const { branding } = useBranding();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setMenuItems([]);
+
+    const fetchMenu = async () => {
+      try {
+        const params = new URLSearchParams({ platform: 'origami', locale: lang });
+        const response = await fetch(
+          `${CONFIG.API_BASE_URL}/api/sections/main-menu-holding?${params}`,
+          { signal: controller.signal },
+        );
+        if (!response.ok) throw new Error(`Menu request failed: ${response.status}`);
+        const result = await response.json();
+        if (!controller.signal.aborted) {
+          setMenuItems(result.data?.status === true && Array.isArray(result.data.items)
+            ? result.data.items.filter(isMenuItem).sort((a: MenuItem, b: MenuItem) => a.rank - b.rank)
+            : []);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) console.error('Error fetching main menu:', error);
+      }
+    };
+
+    fetchMenu();
+    return () => controller.abort();
+  }, [lang]);
 
   const currentLang = i18n.language?.startsWith('ka') ? 'KA' : 'EN';
 
@@ -117,13 +164,11 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center space-x-8 text-sm tracking-wider uppercase font-medium">
-          <Link to="/what-we-do" className="hover:text-yellow-500 transition-colors">{t('nav.ourStory')}</Link>
-          <Link to="/businesses" className="hover:text-yellow-500 transition-colors">{t('nav.ourBusinesses')}</Link>
-          <Link to="/leadership" className="hover:text-yellow-500 transition-colors">{t('nav.team')}</Link>
-          <Link to="/news" className="hover:text-yellow-500 transition-colors">{t('nav.news')}</Link>
-          <Link to="/contact" className="hover:text-yellow-500 transition-colors">
-            {t('nav.contact')}
-          </Link>
+          {menuItems.map((item) => (
+            /^https?:\/\//i.test(item.link)
+              ? <a key={item.id} href={item.link} className="hover:text-yellow-500 transition-colors">{item.title}</a>
+              : <Link key={item.id} to={item.link} className="hover:text-yellow-500 transition-colors">{item.title}</Link>
+          ))}
 
           {/* Desktop Language Switcher */}
           <div className={`relative flex items-center p-1 border rounded-full transition-all duration-300 ${
@@ -231,22 +276,16 @@ export function Navbar() {
             className="fixed top-0 right-0 w-full sm:w-[400px] h-[100dvh] bg-white dark:bg-[#050505] text-black dark:text-white shadow-2xl lg:hidden z-40 flex flex-col border-l border-gray-200 dark:border-gray-800"
           >
             <div className="flex-1 flex flex-col p-8 pt-[120px] space-y-0 font-[Cinzel] tracking-[0.15em] uppercase text-lg overflow-y-auto">
-              <motion.div variants={itemVariants}>
-                <Link to="/" className="block py-5 border-b border-gray-100 dark:border-gray-800 hover:text-yellow-600 transition-colors" onClick={() => setIsMenuOpen(false)}>{t('nav.home')}</Link>
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <Link to="/what-we-do" className="block py-5 border-b border-gray-100 dark:border-gray-800 hover:text-yellow-600 transition-colors" onClick={() => setIsMenuOpen(false)}>{t('nav.ourStory')}</Link>
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <Link to="/businesses" className="block py-5 border-b border-gray-100 dark:border-gray-800 hover:text-yellow-600 transition-colors" onClick={() => setIsMenuOpen(false)}>{t('nav.ourBusinesses')}</Link>
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <Link to="/leadership" className="block py-5 border-b border-gray-100 dark:border-gray-800 hover:text-yellow-600 transition-colors" onClick={() => setIsMenuOpen(false)}>{t('nav.team')}</Link>
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <Link to="/news" className="block py-5 border-b border-gray-100 dark:border-gray-800 hover:text-yellow-600 transition-colors" onClick={() => setIsMenuOpen(false)}>{t('nav.news')}</Link>
-              </motion.div>
-              
+              {menuItems.map((item) => (
+                <motion.div key={item.id} variants={itemVariants}>
+                  {/^https?:\/\//i.test(item.link) ? (
+                    <a href={item.link} className="block py-5 border-b border-gray-100 dark:border-gray-800 hover:text-yellow-600 transition-colors" onClick={() => setIsMenuOpen(false)}>{item.title}</a>
+                  ) : (
+                    <Link to={item.link} className="block py-5 border-b border-gray-100 dark:border-gray-800 hover:text-yellow-600 transition-colors" onClick={() => setIsMenuOpen(false)}>{item.title}</Link>
+                  )}
+                </motion.div>
+              ))}
+
               {/* Language Selector */}
               <motion.div variants={itemVariants} className="pt-8 flex flex-wrap gap-4">
                 <button 
